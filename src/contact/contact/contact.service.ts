@@ -1,40 +1,36 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm'
+import { Logger } from '@nestjs/common';
 import { ContactEntity } from './contact.entity';
 import { ContactDto } from './contact.dto';
+import { ContactRepository } from './contact.repository';
 
 @Injectable()
 export class ContactService {
+  private logger = new Logger('ContactService');
     constructor(
-        @InjectRepository(ContactEntity)
-        private usersRepository: Repository<ContactEntity>,
+        @InjectRepository(ContactRepository)
+        private contactRepository: ContactRepository,
       ) {}
     
       async saveContact(contactDto:ContactDto):Promise<ContactEntity>{
-       let contactEntity : ContactEntity  = new ContactEntity();
-       contactEntity.fName= contactDto.fName;
-       contactEntity.lName=contactDto.lName;
-       contactEntity.email= contactDto.email;
-       contactEntity.city=contactDto.city;
-       contactEntity.country=contactDto.country
-       contactEntity.dob=contactDto.dob
-       contactEntity.visaType=contactDto.visaType;
-       contactEntity.eligible=contactDto.eligible;
-    return await this.usersRepository.save(contactEntity);
+        this.logger.verbose('enter into saveContact');
+    return await this.contactRepository.createContact(contactDto);
       }
      
     
       async findAll(): Promise<ContactEntity[]> {
-        return this.usersRepository.find();
+        this.logger.verbose('enter into findAll');
+        return this.contactRepository.find();
       }
     
-      findOne(id: string): Promise<ContactEntity> {
-        return this.usersRepository.findOne(id);
+      findById(id: string): Promise<ContactEntity> {
+        this.logger.verbose('enter into findById');
+        return this.contactRepository.findOne(id);
       }
-    
+    /*
       async remove(id: string): Promise<void> {
         await this.usersRepository.delete(id);
       }
-
+*/
 }
