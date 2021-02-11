@@ -4,6 +4,7 @@ import { Logger } from '@nestjs/common';
 import { ContactEntity } from './contact.entity';
 import { ContactDto } from './contact.dto';
 import { ContactRepository } from './contact.repository';
+import { SearchDto } from './search.dto';
 
 @Injectable()
 export class ContactService {
@@ -27,6 +28,12 @@ export class ContactService {
       findById(id: string): Promise<ContactEntity> {
         this.logger.verbose('enter into findById');
         return this.contactRepository.findOne(id);
+      }
+
+      findContactByquery(searchDto:SearchDto):Promise<ContactEntity[]>{
+
+        return this.contactRepository.getContactByQuery(searchDto);
+
       }
     /*
       async remove(id: string): Promise<void> {
